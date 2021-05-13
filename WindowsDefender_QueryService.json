@@ -1,0 +1,242 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01NUNG9A8A4I0274vp7AeIzCLv8oiX662Lj",
+    "name": "Windows Defender Status",
+    "title": "Windows Defender Status",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": null,
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "description": "Service checker.",
+      "display_name": "Windows Defender Status",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "windows.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01NUNRJPQDD2D1RrG6eY5cVQs4aEZy0Knqg",
+        "name": "Group",
+        "title": "Fetch Global Variables",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "If you have information stored in global variables, you can enable this group and use the set variables it contains to update your local variables with the global variable values",
+          "display_name": "Fetch Global Variables",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01NUNRVZLSO8O0MjAcIOZf1JRm3mkw2L7oE",
+            "name": "Set Variables",
+            "title": "Set Variables",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "If you have information stored in global variables, you can enable this group and use the set variables it contains to update your local variables with the global variable values",
+              "display_name": "Set Variables",
+              "skip_execution": true
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01NUNIJZOJKM62jAxtPB3XlZ3zNSb3jFlA7",
+        "name": "Query Windows Service",
+        "title": "Query Windows Service",
+        "type": "windows.query_windows_service",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Query Windows Service",
+          "runtime_user": {
+            "override_target_runtime_user": false,
+            "target_default": true
+          },
+          "service_name": "WinDefend",
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": false,
+            "override_workflow_target_group_criteria": false,
+            "use_workflow_target": true,
+            "use_workflow_target_group": false
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01NUNKCJ41SKW5NhrKHVyp7WpPqM5dxRuko",
+        "name": "Parallel Block",
+        "title": "Is the service running?",
+        "type": "logic.parallel",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Is the service running?",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01NUNKCT4LHP91SAUwnnVGtNbtVts6EeHVW",
+            "name": "Parallel Branch",
+            "title": "NO",
+            "type": "logic.parallel_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "NO",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01NUNPZ5EAFAH0pL8GIeLTuCgHiakwnE1NK",
+                "name": "Completed",
+                "title": "Completed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "display_name": "Completed",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01NUNI1GU38L22AXOwJS7fZMOxORNlz4HGr",
+        "name": "Control Windows Service",
+        "title": "Control Windows Service",
+        "type": "windows.control_windows_service",
+        "base_type": "activity",
+        "properties": {
+          "action_on_service": "restart",
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Control Windows Service",
+          "runtime_user": {
+            "override_target_runtime_user": false,
+            "target_default": true
+          },
+          "service_name": "WinDefend",
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": false,
+            "override_workflow_target_group_criteria": false,
+            "use_workflow_target": true,
+            "use_workflow_target_group": false
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01NUNUCF32LXP6X9YSkjmmpWVlSwjAqviLG",
+        "name": "Parallel Block",
+        "title": "Was the service updated?",
+        "type": "logic.parallel",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Was the service updated?",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01NUNUCON791R7SJKOW7WcvsT1w5WZquqX9",
+            "name": "Parallel Branch",
+            "title": "NO",
+            "type": "logic.parallel_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "NO",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01NUO06T8VD8Y1RskEjaITeTojIqvAD7Vij",
+                "name": "Completed",
+                "title": "Completed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "succeeded",
+                  "continue_on_failure": false,
+                  "display_name": "Completed",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01NUO2E6VGKH024UvKLUv7BdR6RadKzl00U",
+        "name": "Group",
+        "title": "Verify New State",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Verify New State",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01NUO23WA91YJ344AlNmOG9yCxZdfDTjSxb",
+            "name": "Query Windows Service",
+            "title": "Query Windows Service",
+            "type": "windows.query_windows_service",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "Query Windows Service",
+              "runtime_user": {
+                "override_target_runtime_user": false,
+                "target_default": true
+              },
+              "service_name": "WinDefend",
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": false,
+                "override_workflow_target_group_criteria": false,
+                "use_workflow_target": true,
+                "use_workflow_target_group": false
+              }
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  }
+}
